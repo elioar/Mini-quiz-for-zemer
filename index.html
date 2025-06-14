@@ -162,38 +162,104 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
+            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             pointer-events: none;
-            z-index: 99999;
+            z-index: 999999;
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(2px);
         }
 
         .celebration-message {
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
+            transform: translate(-50%, -50%) scale(0.5) rotate(-10deg);
             z-index: 100000;
             min-width: 300px;
             max-width: 90%;
-            background: white;
-            color: #FF1493;
-            padding: 20px;
-            border-radius: 15px;
+            background: linear-gradient(135deg, #FF69B4, #FF1493);
+            color: white;
+            padding: 30px;
+            border-radius: 25px;
             text-align: center;
-            font-size: 1.8em;
+            font-size: 2em;
             font-weight: bold;
             opacity: 0;
-            transition: all 0.5s ease;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 15px 40px rgba(255, 20, 147, 0.3);
             pointer-events: none;
+            border: 3px solid white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: messageFloat 3s ease-in-out infinite;
         }
 
         .celebration-message.show {
             opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
+            transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        }
+
+        @keyframes messageFloat {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            }
+            50% {
+                transform: translate(-50%, -52%) scale(1.02) rotate(2deg);
+            }
+        }
+
+        .celebration-message::before,
+        .celebration-message::after {
+            content: '💖';
+            position: absolute;
+            font-size: 2em;
+            animation: spinHeart 2s linear infinite;
+        }
+
+        .celebration-message::before {
+            left: -30px;
+            top: -20px;
+        }
+
+        .celebration-message::after {
+            right: -30px;
+            bottom: -20px;
+        }
+
+        @keyframes spinHeart {
+            0% {
+                transform: rotate(0deg) scale(1);
+            }
+            50% {
+                transform: rotate(180deg) scale(1.2);
+            }
+            100% {
+                transform: rotate(360deg) scale(1);
+            }
+        }
+
+        .animated-kiss {
+            display: inline-block;
+            animation: popKiss 1s ease-out forwards;
+            opacity: 0;
+            transform: scale(0.5);
+        }
+
+        @keyframes popKiss {
+            0% {
+                opacity: 0;
+                transform: scale(0.5) rotate(-20deg);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2) rotate(10deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
         }
 
         .celebration-message .highlight {
@@ -352,6 +418,11 @@
         <div id="celebrationContainer" class="celebration-container" style="display: none;">
             <div id="celebrationMessage" class="celebration-message"></div>
         </div>
+    </div>
+
+    <!-- Celebration Container -->
+    <div id="celebrationContainer" class="celebration-container" style="display: none;">
+        <div id="celebrationMessage" class="celebration-message"></div>
     </div>
 
     <script>
@@ -1560,14 +1631,18 @@
 
         function startCelebration(score) {
             const container = document.getElementById('celebrationContainer');
+            
+            // Clear only the celebration effects and recreate message element
+            container.innerHTML = `<div id="celebrationMessage" class="celebration-message"></div>`;
             const message = document.getElementById('celebrationMessage');
             
-            // Clear any existing content
-            container.innerHTML = '';
-            message.innerHTML = '';
-            
-            // Show container
+            // Show container and ensure it's visible
+            container.style.removeProperty('display');
+            container.style.removeProperty('opacity');
+            container.style.removeProperty('visibility');
             container.style.display = 'block';
+            container.style.opacity = '1';
+            container.style.visibility = 'visible';
             
             // Determine message and kisses based on score
             let messageText = '';
@@ -1575,61 +1650,58 @@
 
             if (score >= 95) {
                 kisses = '💋💋💋💋💋';
-                messageText = `👑 🌟 Μπράβο ΓΥΝΑΙΚΑΡΑ ΜΟΥ ΕΣΥ, ΤΟ'ΧΕΙΣ! 👑 🌟`;
+                messageText = `👑 🌟 Μπράβο ΓΥΝΑΙΚΑΡΑ ΜΟΥ ΕΣΥ, ΤΟ'ΧΕΙΣ! 👑 🌟<br>Είσαι απίστευτη! 🌟<br>Σε λατρεύω! 💖`;
             } else if (score >= 90) {
                 kisses = '💋💋💋💋';
-                messageText = `🌟 Μπράβο ΒΑΛΕΝΑΚΙ ΜΟΥ κέρδισες ένα φιλάκι! 🌟`;
+                messageText = `🌟 Μπράβο ΜΠΑΛΕΝΑΚΙ ΜΟΥ κέρδισες ένα φιλάκι! 🌟<br>Είσαι φανταστική! ✨<br>Πολύ περήφανος! 💝`;
             } else if (score >= 85) {
                 kisses = '💋💋💋';
-                messageText = `✨ Μπράβο στο ZEMER μου! ✨`;
+                messageText = `✨ Μπράβο στο ZEMER μου! ✨<br>Τα πας τέλεια! 🎯<br>Συνέχισε έτσι! 🌟`;
             } else if (score >= 50) {
                 kisses = '💋💋';
-                messageText = `Μπορείς και καλύτερα!`;
+                messageText = `Μπορείς και καλύτερα Shpirti μου! 💫<br>, πιστεύω σε σένα! ✨<br>Λίγο ακόμα διάβασμα! 📚`;
             } else if (score >= 30) {
                 kisses = '💋';
-                messageText = `Χρειάζεται διάβασμα!`;
+                messageText = `Χρειάζεται διάβασμα ZEMER! 📖<br>Ξέρω ότι μπορείς καλύτερα! 💪<br>Πάμε πάλι! 🔄`;
             } else {
-                messageText = `🤬`;
+                messageText = `🤬 Καλά ρε ZEMER, με δουλεύεις; 😤<br>Άνοιξε κανένα βιβλίο! 📚<br>Έλα, από την αρχή! 🔄`;
             }
 
-            // Set message content
-            message.innerHTML = messageText + '<br>' + kisses;
+            // Set message content with animated kisses
+            const kissesHtml = kisses.split('').map((kiss, index) => 
+                `<span class="animated-kiss" style="animation-delay: ${index * 0.2}s">${kiss}</span>`
+            ).join('');
+            message.innerHTML = messageText + '<br>' + kissesHtml;
             
-            // Show message with animation
-            setTimeout(() => {
+            // Show message with a small delay to ensure DOM is updated
+            requestAnimationFrame(() => {
                 message.classList.add('show');
-            }, 100);
+            });
 
-            // Create celebration effects for high scores
-            if (score >= 85) {
+            // Create celebration effects for all scores
+            createConfetti();
+            createFloatingHearts();
+
+            const celebrationInterval = setInterval(() => {
+                if (document.hidden) return; // Don't animate if page is not visible
                 createConfetti();
                 createFloatingHearts();
+            }, 3000);
 
-                const celebrationInterval = setInterval(() => {
-                    if (document.hidden) return; // Don't animate if page is not visible
-                    createConfetti();
-                    createFloatingHearts();
-                }, 3000);
-
-                // Stop celebrations after 9 seconds
-                setTimeout(() => {
-                    clearInterval(celebrationInterval);
-                    container.style.display = 'none';
-                    message.classList.remove('show');
-                }, 9000);
-            } else {
-                // For lower scores, just show the message briefly
+            // Stop celebrations after 9 seconds
+            setTimeout(() => {
+                clearInterval(celebrationInterval);
+                message.classList.remove('show');
                 setTimeout(() => {
                     container.style.display = 'none';
-                    message.classList.remove('show');
-                }, 5000);
-            }
+                }, 500);
+            }, 9000);
         }
 
         function createConfetti() {
             const container = document.getElementById('celebrationContainer');
             const colors = ['#FF69B4', '#FFB6C1', '#FF1493', '#FFC0CB', '#FF69B4'];
-            const confettiCount = window.innerWidth <= 768 ? 50 : 100;
+            const confettiCount = window.innerWidth <= 768 ? 75 : 150;
             
             for (let i = 0; i < confettiCount; i++) {
                 const confetti = document.createElement('div');
@@ -1648,7 +1720,7 @@
 
         function createFloatingHearts() {
             const container = document.getElementById('celebrationContainer');
-            const heartsCount = window.innerWidth <= 768 ? 8 : 15;
+            const heartsCount = window.innerWidth <= 768 ? 12 : 25;
             const hearts = ['💖', '💝', '💗', '💓', '💕'];
             
             for (let i = 0; i < heartsCount; i++) {
