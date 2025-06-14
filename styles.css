@@ -395,6 +395,34 @@ body {
     color: #FF1493;
     text-shadow: 2px 2px 4px rgba(255, 20, 147, 0.3);
     line-height: 1.5;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(255, 182, 193, 0.2);
+}
+
+.celebration-message .highlight {
+    display: inline-block;
+    background: linear-gradient(45deg, #FF69B4, #FF1493);
+    color: white;
+    padding: 0.3rem 1rem;
+    border-radius: 8px;
+    font-weight: bold;
+    margin: 0 0.3rem;
+    box-shadow: 0 4px 15px rgba(255, 20, 147, 0.3);
+    animation: pulseHighlight 2s infinite;
+}
+
+@keyframes pulseHighlight {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 
 .celebration-message.show {
@@ -817,6 +845,7 @@ body,
 
     .celebration-message {
         font-size: 1.5rem;
+        padding: 1rem;
         margin: 1rem 0;
     }
 
@@ -869,6 +898,7 @@ body,
 
     .celebration-message {
         font-size: 1.25rem;
+        padding: 0.8rem;
     }
 
     .celebration-hearts {

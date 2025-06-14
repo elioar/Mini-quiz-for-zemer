@@ -6,6 +6,214 @@
     <title>📚 Στατιστική Κουίζ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .rewards-info {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 15px;
+            margin: 20px auto;
+            max-width: 600px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .rewards-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 8px;
+            border-radius: 15px;
+        }
+
+        .rewards-header .trophy {
+            font-size: 1.4em;
+            animation: bounce 2s infinite;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .rewards-header h3 {
+            color: #FFFFFF;
+            font-size: 1.2em;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .rewards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            padding: 5px;
+        }
+
+        .reward-pill {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: help;
+            overflow: hidden;
+        }
+
+        .reward-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 15px;
+            background: inherit;
+        }
+
+        .reward-pill:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .reward-score {
+            font-weight: bold;
+            font-size: 0.9em;
+            padding: 4px 8px;
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            min-width: 45px;
+            text-align: center;
+            color: #FFFFFF;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .reward-badge {
+            font-size: 0.9em;
+            letter-spacing: -1px;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+        }
+
+        .reward-pill.gold { background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 215, 0, 0.1)); }
+        .reward-pill.silver { background: linear-gradient(135deg, rgba(192, 192, 192, 0.3), rgba(192, 192, 192, 0.1)); }
+        .reward-pill.bronze { background: linear-gradient(135deg, rgba(205, 127, 50, 0.3), rgba(205, 127, 50, 0.1)); }
+        .reward-pill.good { background: linear-gradient(135deg, rgba(100, 149, 237, 0.3), rgba(100, 149, 237, 0.1)); }
+        .reward-pill.study { background: linear-gradient(135deg, rgba(147, 112, 219, 0.3), rgba(147, 112, 219, 0.1)); }
+        .reward-pill.try-again { background: linear-gradient(135deg, rgba(255, 99, 71, 0.3), rgba(255, 99, 71, 0.1)); }
+
+        .reward-pill.gold .reward-score { background: rgba(255, 215, 0, 0.3); }
+        .reward-pill.silver .reward-score { background: rgba(192, 192, 192, 0.3); }
+        .reward-pill.bronze .reward-score { background: rgba(205, 127, 50, 0.3); }
+        .reward-pill.good .reward-score { background: rgba(100, 149, 237, 0.3); }
+        .reward-pill.study .reward-score { background: rgba(147, 112, 219, 0.3); }
+        .reward-pill.try-again .reward-score { background: rgba(255, 99, 71, 0.3); }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-5px); }
+            60% { transform: translateY(-3px); }
+        }
+
+        @media (max-width: 768px) {
+            .rewards-info {
+                max-width: 95%;
+                padding: 12px;
+                margin: 15px auto;
+            }
+
+            .rewards-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 8px;
+            }
+
+            .reward-content {
+                padding: 6px 12px;
+            }
+
+            .reward-score {
+                font-size: 0.8em;
+                padding: 3px 6px;
+            }
+
+            .reward-badge {
+                font-size: 0.8em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .rewards-header h3 {
+                font-size: 1em;
+            }
+
+            .rewards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .reward-content {
+                padding: 5px 10px;
+            }
+
+            .reward-score {
+                min-width: 35px;
+            }
+        }
+
+        .celebration-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 99999;
+        }
+
+        .celebration-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            z-index: 100000;
+            min-width: 300px;
+            max-width: 90%;
+            background: white;
+            color: #FF1493;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            opacity: 0;
+            transition: all 0.5s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            pointer-events: none;
+        }
+
+        .celebration-message.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .celebration-message .highlight {
+            display: inline-block;
+            padding: 5px 15px;
+            margin: 0 5px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 215, 0, 0.1));
+            border-radius: 20px;
+            color: #FFD700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            animation: pulseHighlight 2s infinite;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        @keyframes pulseHighlight {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -16,6 +224,50 @@
                 <i class="fas fa-heart"></i>
                 <i class="fas fa-heart"></i>
                 <i class="fas fa-heart"></i>
+            </div>
+            <div class="rewards-info">
+                <div class="rewards-header">
+                    <span class="trophy">🏆</span>
+                    <h3>Επίπεδα Επιτυχίας</h3>
+                </div>
+                <div class="rewards-grid">
+                    <div class="reward-pill gold" title="Άριστα!">
+                        <div class="reward-content">
+                            <span class="reward-score">≥95%</span>
+                            <span class="reward-badge">💋💋💋💋💋</span>
+                        </div>
+                    </div>
+                    <div class="reward-pill silver" title="Εξαιρετικά!">
+                        <div class="reward-content">
+                            <span class="reward-score">≥90%</span>
+                            <span class="reward-badge">💋💋💋💋</span>
+                        </div>
+                    </div>
+                    <div class="reward-pill bronze" title="Πολύ Καλά!">
+                        <div class="reward-content">
+                            <span class="reward-score">≥85%</span>
+                            <span class="reward-badge">💋💋💋</span>
+                        </div>
+                    </div>
+                    <div class="reward-pill good" title="Καλά!">
+                        <div class="reward-content">
+                            <span class="reward-score">≥50%</span>
+                            <span class="reward-badge">💋💋</span>
+                        </div>
+                    </div>
+                    <div class="reward-pill study" title="Χρειάζεται Διάβασμα">
+                        <div class="reward-content">
+                            <span class="reward-score">≥30%</span>
+                            <span class="reward-badge">💋</span>
+                        </div>
+                    </div>
+                    <div class="reward-pill try-again" title="Προσπάθησε Ξανά">
+                        <div class="reward-content">
+                            <span class="reward-score"><30%</span>
+                            <span class="reward-badge">🤬</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -63,28 +315,28 @@
             </div>
         </div>
 
-        <div class="quiz-container" id="quizContainer">
+        <div id="quizContainer" style="display: none;">
+            <div id="questionsContainer"></div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progressBar"></div>
             </div>
-            
-            <div id="questionsContainer"></div>
-            
             <div class="controls">
-                <button class="btn" id="backToCategories">Πίσω στις Κατηγορίες</button>
-                <button class="btn" id="checkAnswers">Έλεγχος Απαντήσεων</button>
-                <button class="btn restart" id="restartQuiz" style="display: none;">Επανεκκίνηση Κουίζ</button>
+                <button id="checkAnswers" class="btn">Έλεγχος Απαντήσεων</button>
+                <button id="restartQuiz" class="btn" style="display: none;">Προσπάθησε Ξανά</button>
+                <button id="backToCategories" class="btn">Πίσω στις Κατηγορίες</button>
             </div>
-            
-            <div class="results" id="results">
-                <h2>🎉 Αποτελέσματα</h2>
-                <div class="score" id="score">0/20</div>
-                <div class="percentage" id="percentage">0%</div>
-                <div class="celebration-message" id="celebrationMessage"></div>
+            <div id="results" class="results" style="display: none;">
+                <h2>Αποτελέσματα</h2>
+                <div class="score">Σωστές απαντήσεις: <span id="score">0/0</span></div>
+                <div class="percentage">Ποσοστό επιτυχίας: <span id="percentage">0%</span></div>
             </div>
         </div>
+
+        <!-- Celebration Container -->
+        <div id="celebrationContainer" class="celebration-container" style="display: none;">
+            <div id="celebrationMessage" class="celebration-message"></div>
+        </div>
     </div>
-    <div class="celebration-container" id="celebrationContainer"></div>
 
     <script>
         const questionsByCategory = {
@@ -1166,6 +1418,9 @@
             } else {
                 questions = questionsByCategory[currentCategory];
             }
+
+            // Store current questions for later use
+            window.currentQuestions = questions;
             
             questions.forEach((q, index) => {
                 const questionCard = document.createElement('div');
@@ -1207,23 +1462,22 @@
 
             const questionIndex = event.currentTarget.dataset.question;
             const answerIndex = parseInt(event.currentTarget.dataset.answer);
+            const questionCard = event.currentTarget.closest('.question-card');
 
-            // If this question was already answered, don't allow changing
-            if (userAnswers[questionIndex] !== undefined) return;
+            // Remove previous selection if exists
+            questionCard.querySelectorAll('.answer-option').forEach(option => {
+                option.style.background = '';
+                option.style.borderColor = '';
+                option.classList.remove('selected');
+            });
 
             // Store the answer
             userAnswers[questionIndex] = answerIndex;
 
-            // Disable all options for this question
-            const questionCard = event.currentTarget.closest('.question-card');
-            questionCard.classList.add('completed');
-            questionCard.querySelectorAll('.answer-option').forEach(option => {
-                option.classList.add('disabled');
-            });
-
             // Highlight the selected answer
             event.currentTarget.style.background = '#e3f2fd';
             event.currentTarget.style.borderColor = '#2196f3';
+            event.currentTarget.classList.add('selected');
 
             updateProgressBar();
         }
@@ -1235,7 +1489,8 @@
         }
 
         function checkAnswers() {
-            if (Object.keys(userAnswers).length !== questionsByCategory[currentCategory].length) {
+            const questions = window.currentQuestions;
+            if (!questions || Object.keys(userAnswers).length !== questions.length) {
                 alert('Παρακαλώ απαντήστε σε όλες τις ερωτήσεις πριν τη βαθμολόγηση!');
                 return;
             }
@@ -1243,137 +1498,164 @@
             quizCompleted = true;
             let correctAnswers = 0;
 
-            questionsByCategory[currentCategory].forEach((question, questionIndex) => {
+            questions.forEach((question, questionIndex) => {
                 const userAnswer = userAnswers[questionIndex];
                 const correctAnswer = question.correct;
                 const questionCard = document.querySelectorAll('.question-card')[questionIndex];
                 const options = questionCard.querySelectorAll('.answer-option');
 
+                // Remove any previous classes
+                options.forEach(option => {
+                    option.classList.remove('correct', 'incorrect', 'selected');
+                });
+
+                // Mark correct answer
                 options[correctAnswer].classList.add('correct');
                 
-                if (userAnswer !== correctAnswer) {
-                    options[userAnswer].classList.add('incorrect');
-                } else {
+                if (userAnswer === correctAnswer) {
                     correctAnswers++;
+                } else if (userAnswer !== undefined) {
+                    // Mark incorrect answer if one was selected
+                    options[userAnswer].classList.add('incorrect');
                 }
+
+                // Disable all options
+                options.forEach(option => option.classList.add('disabled'));
             });
 
-            const totalQuestions = questionsByCategory[currentCategory].length;
+            const totalQuestions = questions.length;
             const percentage = Math.round((correctAnswers / totalQuestions) * 100);
+            
+            // Update results display
             document.getElementById('score').textContent = `${correctAnswers}/${totalQuestions}`;
             document.getElementById('percentage').textContent = `${percentage}%`;
             document.getElementById('results').style.display = 'block';
 
+            // Update buttons
             document.getElementById('checkAnswers').style.display = 'none';
             document.getElementById('restartQuiz').style.display = 'inline-block';
+            
+            // Scroll to results
             document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
 
-            // Check if score is above 80% and celebrate
-            if (percentage >= 80) {
-                startCelebration(percentage);
-            }
+            // Always show celebration message, but with different effects based on score
+            startCelebration(percentage);
         }
 
         function startCelebration(score) {
             const container = document.getElementById('celebrationContainer');
+            const message = document.getElementById('celebrationMessage');
+            
+            // Clear any existing content
+            container.innerHTML = '';
+            message.innerHTML = '';
+            
+            // Show container
             container.style.display = 'block';
             
-            // Show celebration message with emojis based on score
-            const message = document.getElementById('celebrationMessage');
-            let emojis = '';
+            // Determine message and kisses based on score
+            let messageText = '';
+            let kisses = '';
+
             if (score >= 95) {
-                emojis = '👑 🌟 ';
+                kisses = '💋💋💋💋💋';
+                messageText = `👑 🌟 Μπράβο ΓΥΝΑΙΚΑΡΑ ΜΟΥ ΕΣΥ, ΤΟ'ΧΕΙΣ! 👑 🌟`;
             } else if (score >= 90) {
-                emojis = '🌟 ';
+                kisses = '💋💋💋💋';
+                messageText = `🌟 Μπράβο ΒΑΛΕΝΑΚΙ ΜΟΥ κέρδισες ένα φιλάκι! 🌟`;
+            } else if (score >= 85) {
+                kisses = '💋💋💋';
+                messageText = `✨ Μπράβο στο ZEMER μου! ✨`;
+            } else if (score >= 50) {
+                kisses = '💋💋';
+                messageText = `Μπορείς και καλύτερα!`;
+            } else if (score >= 30) {
+                kisses = '💋';
+                messageText = `Χρειάζεται διάβασμα!`;
             } else {
-                emojis = '✨ ';
+                messageText = `🤬`;
             }
-            message.innerHTML = `${emojis}Μπράβο στο ZEMER μου!${emojis}<br>🦜`;
-            message.classList.add('show');
 
-            // Initial celebration
-            createConfetti();
-            createFloatingHearts();
-
-            // Reduced frequency for mobile
-            const isMobile = window.innerWidth <= 768;
-            const interval = isMobile ? 4000 : 3000;
-            const confettiCount = isMobile ? 50 : 100;
-            const heartsCount = isMobile ? 8 : 15;
-
-            // Keep celebration going with reduced elements
-            const celebrationInterval = setInterval(() => {
-                if (Math.random() > 0.5) {
-                    createConfetti(confettiCount);
-                } else {
-                    createFloatingHearts(heartsCount);
-                }
-            }, interval);
-
-            // Stop after 9 seconds
+            // Set message content
+            message.innerHTML = messageText + '<br>' + kisses;
+            
+            // Show message with animation
             setTimeout(() => {
-                clearInterval(celebrationInterval);
-                container.style.display = 'none';
-                message.classList.remove('show');
-            }, 9000);
+                message.classList.add('show');
+            }, 100);
+
+            // Create celebration effects for high scores
+            if (score >= 85) {
+                createConfetti();
+                createFloatingHearts();
+
+                const celebrationInterval = setInterval(() => {
+                    if (document.hidden) return; // Don't animate if page is not visible
+                    createConfetti();
+                    createFloatingHearts();
+                }, 3000);
+
+                // Stop celebrations after 9 seconds
+                setTimeout(() => {
+                    clearInterval(celebrationInterval);
+                    container.style.display = 'none';
+                    message.classList.remove('show');
+                }, 9000);
+            } else {
+                // For lower scores, just show the message briefly
+                setTimeout(() => {
+                    container.style.display = 'none';
+                    message.classList.remove('show');
+                }, 5000);
+            }
         }
 
-        function createConfetti(count = 100) {
+        function createConfetti() {
             const container = document.getElementById('celebrationContainer');
-            const colors = ['#FF69B4', '#FFB6C1', '#FF1493', '#FFC0CB', '#FF69B4', '#FFE4E1'];
-            const isMobile = window.innerWidth <= 768;
+            const colors = ['#FF69B4', '#FFB6C1', '#FF1493', '#FFC0CB', '#FF69B4'];
+            const confettiCount = window.innerWidth <= 768 ? 50 : 100;
             
-            for (let i = 0; i < count; i++) {
+            for (let i = 0; i < confettiCount; i++) {
                 const confetti = document.createElement('div');
                 confetti.className = 'confetti';
-                
-                // Randomize size for more variety
-                const size = Math.random() * (isMobile ? 8 : 12) + 5;
-                confetti.style.width = `${size}px`;
-                confetti.style.height = `${size}px`;
-                
-                // Randomize position and animation
                 confetti.style.left = Math.random() * 100 + 'vw';
                 confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.animation = `confettiFall ${Math.random() * 2 + 2}s linear forwards`;
-                
-                // Add rotation for more dynamic movement
-                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
-                
+                confetti.style.animation = `confettiFall ${Math.random() * 2 + 3}s linear forwards`;
                 container.appendChild(confetti);
                 
+                // Remove confetti after animation
                 setTimeout(() => {
                     confetti.remove();
-                }, 4000);
+                }, 5000);
             }
         }
 
-        function createFloatingHearts(count = 15) {
+        function createFloatingHearts() {
             const container = document.getElementById('celebrationContainer');
-            const hearts = ['❤️', '💖', '💝', '💕', '💗'];
-            const isMobile = window.innerWidth <= 768;
+            const heartsCount = window.innerWidth <= 768 ? 8 : 15;
+            const hearts = ['💖', '💝', '💗', '💓', '💕'];
             
-            for (let i = 0; i < count; i++) {
+            for (let i = 0; i < heartsCount; i++) {
                 const heart = document.createElement('div');
                 heart.className = 'celebration-hearts';
                 heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
                 
-                // Adjust size based on device
-                heart.style.fontSize = isMobile ? '1.5rem' : '2rem';
-                
-                // Randomize starting position
+                // Random starting position
                 heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.top = Math.random() * 100 + 'vh';
+                heart.style.top = (Math.random() * 20 + 80) + 'vh';
                 
-                // Create more natural movement
-                const angle = Math.random() * Math.PI * 2;
-                const distance = Math.random() * 150 + 50;
-                heart.style.setProperty('--end-x', Math.cos(angle) * distance + 'px');
-                heart.style.setProperty('--end-y', Math.sin(angle) * distance + 'px');
-                heart.style.setProperty('--rotation', (Math.random() * 720 - 360) + 'deg');
+                // Random end position
+                const endX = (Math.random() - 0.5) * 200;
+                const endY = -Math.random() * 100 - 100;
+                const rotation = (Math.random() - 0.5) * 720;
+                
+                heart.style.setProperty('--end-x', `${endX}px`);
+                heart.style.setProperty('--end-y', `${endY}px`);
+                heart.style.setProperty('--rotation', `${rotation}deg`);
                 
                 container.appendChild(heart);
                 
+                // Remove heart after animation
                 setTimeout(() => {
                     heart.remove();
                 }, 3000);
